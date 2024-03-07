@@ -8,6 +8,7 @@ import org.springframework.web.bind.annotation.*;
 
 import java.util.HashMap;
 import java.util.List;
+import java.util.Objects;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -47,20 +48,20 @@ public class AreaController {
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String,String> add(@RequestBody Area area) {
 
-        HashMap<String,String> responce = new HashMap<>();
+        HashMap<String,String> response = new HashMap<>();
         String errors="";
 
         if(areaDao.findByCode(area.getCode()) != null)
             errors = errors+"<br> Existing Area Code";
 
-        if(errors=="") areaDao.save(area);
+        if(errors.isEmpty()) areaDao.save(area);
         else errors = "Server Validation Errors : <br>"+errors;
 
-        responce.put("id",String.valueOf(area.getId()));
-        responce.put("url","/areas/"+area.getId());
-        responce.put("errors",errors);
+        response.put("id",String.valueOf(area.getId()));
+        response.put("url","/areas/"+area.getId());
+        response.put("errors",errors);
 
-        return responce;
+        return response;
 
     }
 
@@ -68,22 +69,23 @@ public class AreaController {
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String,String> update(@RequestBody Area area) {
 
-        HashMap<String,String> responce = new HashMap<>();
+        HashMap<String,String> response = new HashMap<>();
+
         String errors="";
 
         Area area1 = areaDao.findByCode(area.getCode());
 
-        if(area1!=null && area.getId()!=area1.getId())
+        if(area1!=null && !Objects.equals(area.getId(), area1.getId()))
             errors = errors+"<br> Existing Code Number";
 
-        if(errors=="") areaDao.save(area);
+        if(errors.isEmpty()) areaDao.save(area);
         else errors = "Server Validation Errors : <br>"+errors;
 
-        responce.put("id",String.valueOf(area.getId()));
-        responce.put("url","/areas/"+area.getId());
-        responce.put("errors",errors);
+        response.put("id",String.valueOf(area.getId()));
+        response.put("url","/areas/"+area.getId());
+        response.put("errors",errors);
 
-        return responce;
+        return response;
 
     }
 
@@ -91,22 +93,22 @@ public class AreaController {
     @ResponseStatus(HttpStatus.CREATED)
     public HashMap<String,String> delete(@PathVariable Integer id) {
 
-        HashMap<String,String> responce = new HashMap<>();
+        HashMap<String,String> response = new HashMap<>();
         String errors="";
 
-        Area area1 = areaDao.findByMyId(id);
+        Area area = areaDao.findByMyId(id);
 
-        if(area1==null)
+        if(area==null)
             errors = errors+"<br> Area Does Not Existed.";
 
-        if(errors=="") areaDao.delete(area1);
+        if(errors.isEmpty()) areaDao.delete(area);
         else errors = "Server Validation Errors : <br>"+errors;
 
-        responce.put("id",String.valueOf(id));
-        responce.put("url","/areas/"+id);
-        responce.put("errors",errors);
+        response.put("id",String.valueOf(id));
+        response.put("url","/areas/"+id);
+        response.put("errors",errors);
 
-        return responce;
+        return response;
 
     }
 
